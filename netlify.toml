@@ -1,8 +1,12 @@
 # This is a monorepo — the frontend lives in frontend/, not the repo root.
+# `publish` is spelled out fully (not just "dist") since the dashboard's own
+# "New site" form didn't resolve a base-relative publish path the way
+# Netlify's docs describe — this avoids drift between this file and
+# whatever the dashboard shows on future deploys.
 [build]
   base = "frontend"
   command = "npm run build"
-  publish = "dist"
+  publish = "frontend/dist"
 
 # Client-side routing (react-router-dom) means routes like /trips/29 only
 # exist in the browser, not as real files — without this, refreshing or
