@@ -1,0 +1,15 @@
+# This is a monorepo — the frontend lives in frontend/, not the repo root.
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+# Client-side routing (react-router-dom) means routes like /trips/29 only
+# exist in the browser, not as real files — without this, refreshing or
+# deep-linking to any non-root route 404s on Netlify. VITE_API_URL is set
+# as a build-time environment variable in the Netlify dashboard, not here
+# (it's deployment-specific, shouldn't be committed).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
