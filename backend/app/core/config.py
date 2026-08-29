@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,6 +14,16 @@ class Settings(BaseSettings):
     # "http://localhost:5173,https://your-site.netlify.app" works without
     # needing pydantic-settings' JSON-list parsing for env vars.
     cors_origins: str = "http://localhost:5173"
+
+    @field_validator("database_url")
+    @classmethod
+    def _use_psycopg3_driver(cls, v: str) -> str:
+        # Hosted Postgres providers (Neon, Render, Supabase, ...) hand out
+        # bare "postgresql://" connection strings, which makes SQLAlchemy
+        # default to psycopg2 — not a dependency here, only psycopg3 is.
+        if v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+psycopg://", 1)
+        return v
 
     @property
     def cors_origin_list(self) -> list[str]:
