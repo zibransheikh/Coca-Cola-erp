@@ -13,6 +13,7 @@ COPY . .
 RUN chmod +x docker-entrypoint.sh
 
 ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
