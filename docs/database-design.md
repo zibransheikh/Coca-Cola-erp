@@ -1,6 +1,6 @@
 # Database Design — Distributor Management System
 
-This document explains the schema in [`db/schema.sql`](../db/schema.sql) and the
+This document explains the schema in [`backend/db/schema.sql`](../backend/db/schema.sql) and the
 reasoning behind its structure. It has been validated by running the DDL
 end-to-end against a real PostgreSQL 16 instance (Docker), including a
 functional test that confirms the append-only triggers actually reject writes.
@@ -149,7 +149,7 @@ schema layer.
 
 ```
 docker run -d --name dms_schema_test -e POSTGRES_PASSWORD=test -p 55432:5432 postgres:16
-docker exec -i dms_schema_test psql -U postgres -v ON_ERROR_STOP=1 < db/schema.sql
+docker exec -i dms_schema_test psql -U postgres -v ON_ERROR_STOP=1 < backend/db/schema.sql
 ```
 
 Applied with zero errors. Followed by a functional check: inserted a

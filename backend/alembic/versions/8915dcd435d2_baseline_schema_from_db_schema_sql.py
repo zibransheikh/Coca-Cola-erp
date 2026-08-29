@@ -19,12 +19,14 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 # The full, hand-designed and independently-validated schema lives in
-# db/schema.sql (see docs/database-design.md for the rationale). This baseline
-# migration applies it verbatim rather than re-deriving it from ORM models, so
-# it stays the single source of truth for the physical schema. Only the
-# auth/RBAC/audit tables are ORM-modeled so far; later phases add models (and
-# ordinary autogenerate migrations) for the rest as those modules get built.
-SCHEMA_SQL_PATH = Path(__file__).resolve().parents[3] / "db" / "schema.sql"
+# backend/db/schema.sql (see docs/database-design.md for the rationale). This
+# baseline migration applies it verbatim rather than re-deriving it from ORM
+# models, so it stays the single source of truth for the physical schema.
+# Only the auth/RBAC/audit tables are ORM-modeled so far; later phases add
+# models (and ordinary autogenerate migrations) for the rest as those modules
+# get built. Lives inside backend/ (not the repo root) so it's included in
+# the Docker build context when deploying the backend on its own.
+SCHEMA_SQL_PATH = Path(__file__).resolve().parents[2] / "db" / "schema.sql"
 
 
 def upgrade() -> None:

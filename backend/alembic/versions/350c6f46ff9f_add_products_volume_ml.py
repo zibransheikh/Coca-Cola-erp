@@ -5,10 +5,15 @@ Revises: 309ad193a1f3
 Create Date: 2026-07-24 11:09:03.942045
 
 """
+import sys
+from pathlib import Path
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from _helpers import column_exists  # noqa: E402
 
 # revision identifiers, used by Alembic.
 revision: str = '350c6f46ff9f'
@@ -39,9 +44,12 @@ SUFFIX_TO_ML = [
 
 def upgrade() -> None:
     """Upgrade schema."""
-    op.add_column("products", sa.Column("volume_ml", sa.Numeric(precision=10, scale=2), nullable=True))
-
+    # backend/db/schema.sql's baseline already includes this column as of a
+    # later edit, so it's guarded to stay a no-op on a fresh install.
     conn = op.get_bind()
+    if not column_exists(conn, "products", "volume_ml"):
+        op.add_column("products", sa.Column("volume_ml", sa.Numeric(precision=10, scale=2), nullable=True))
+
     for suffix, ml in SUFFIX_TO_ML:
         conn.execute(
             sa.text("UPDATE products SET volume_ml = :ml WHERE sku LIKE :pattern AND volume_ml IS NULL"),
